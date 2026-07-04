@@ -1,17 +1,15 @@
-import { CommumVariablesType, fetchApi } from "./shared";
+import { fetchApi } from "./shared";
 
 // REST fetch strategy: every entry maps to a route under app/api/<endpoint>.
-// Add one enum member + endpoint mapping + variables type per new REST operation.
+// Add one enum member + endpoint mapping + variables type per new REST operation, e.g.:
+// Example = "Example" -> EndpointByOperationName.Example = "example" -> app/api/example/route.ts
 enum APIOperationNames {
-  Example = "Example",
 }
 
-const EndpointByOperationName = {
-  [APIOperationNames.Example]: "example",
-}
+const EndpointByOperationName: Record<string, string> = {}
 
 interface VariablesTypePerAPIOperationName {
-  [APIOperationNames.Example]: CommumVariablesType["pagination"] | void;
+  [key: string]: any
 }
 
 const buildAPIGETRequest = <T>(endpoint: string, method = "GET") => async (variables: T) => {
@@ -48,7 +46,7 @@ const createHTTPMethods = (method = "GET") => {
   return Object.values(APIOperationNames).reduce((acc, opName) => {
     type VariablesType = VariablesTypePerAPIOperationName[typeof opName]
 
-    const fetchFunction = buildAPIGETRequest<VariablesType>(EndpointByOperationName[opName as APIOperationNames], method)
+    const fetchFunction = buildAPIGETRequest<VariablesType>(EndpointByOperationName[opName], method)
 
     return {
       ...acc,

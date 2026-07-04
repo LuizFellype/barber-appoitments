@@ -41,18 +41,37 @@ export const paginationParameters = {
 // GraphQL fetch strategy: hits /api/graphql, which proxies to Hasura (see app/api/graphql/route.tsx).
 // Add one enum member + query/mutation doc + variables type per new operation.
 export enum OperationNames {
-  Example = 'Example',
+  ActiveServices = 'ActiveServices',
+  Availability = 'Availability',
 }
 
 interface VariablesTypePerOperationName {
-  [OperationNames.Example]: void;
+  [OperationNames.ActiveServices]: void;
+  [OperationNames.Availability]: { today: string };
 }
 
 const GQLRequestByOperationName = {
-  // `__typename` works against any Hasura instance, even before you've tracked any tables,
-  // so this is a safe end-to-end smoke test of the fetch layer -> proxy -> Hasura round trip.
-  [OperationNames.Example]: `query ${OperationNames.Example} {
-    __typename
+  [OperationNames.ActiveServices]: `query ${OperationNames.ActiveServices} {
+    Service(where: { active: { _eq: true } }, order_by: { name: asc }) {
+      id
+      name
+      description
+      priceCents
+      durationMin
+    }
+  }`,
+
+  // A slot is free when it has no appointment with status SCHEDULED against it
+  // (mirrors isSlotFree() in app-de-agendamento-de-barbearia/services/slots.ts).
+  [OperationNames.Availability]: `query ${OperationNames.Availability}($today: date!) {
+    Slot(
+      where: { date: { _gte: $today }, _not: { Appointments: { status: { _eq: SCHEDULED } } } }
+      order_by: [{ date: asc }, { time: asc }]
+    ) {
+      id
+      date
+      time
+    }
   }`,
 }
 

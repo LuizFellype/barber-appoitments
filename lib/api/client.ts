@@ -1,35 +1,48 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import API from ".";
-import { toast } from "@/hooks/use-toast";
 
-// Example of the react-query + lib/api pattern to copy for real features:
-// a query hook backed by GraphQL, and a mutation hook that invalidates it on success.
+export interface Service {
+  id: string
+  name: string
+  description: string
+  priceCents: number
+  durationMin: number
+}
 
-const exampleKey = "Example"
+export interface Slot {
+  id: string
+  /** ISO date (YYYY-MM-DD). */
+  date: string
+  /** HH:mm. */
+  time: string
+}
 
-export const useExample = () => {
+export interface DayAvailability {
+  date: string
+  slots: Slot[]
+}
+
+export const useActiveServices = () => {
   return useQuery({
-    queryKey: [exampleKey],
-    queryFn: () => API.Query.Example(),
+    queryKey: ["ActiveServices"],
+    queryFn: (): Promise<Service[]> =>
+      API.Query.ActiveServices().then((data: { Service: Service[] }) => data.Service),
   })
 }
 
-export const useCreateExample = () => {
-  const queryClient = useQueryClient()
+export const useAvailability = () => {
+  const today = new Date().toISOString().slice(0, 10)
 
-  return useMutation({
-    mutationFn: async (input: Record<string, any>) => {
-      // return API.Mutation.CreateExample({ input })
-      return API.POST.Example(input as any)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [exampleKey] })
-    },
-    onError: (error) => {
-      toast({
-        title: "Something went wrong",
-        description: `${error}`,
-      });
-    }
+  return useQuery({
+    queryKey: ["Availability", today],
+    queryFn: (): Promise<DayAvailability[]> =>
+      API.Query.Availability({ today }).then((data: { Slot: Slot[] }): DayAvailability[] => {
+        const byDay = new Map<string, Slot[]>()
+        for (const slot of data.Slot) {
+          if (!byDay.has(slot.date)) byDay.set(slot.date, [])
+          byDay.get(slot.date)!.push(slot)
+        }
+        return [...byDay.entries()].map(([date, slots]) => ({ date, slots }))
+      }),
   })
 }
