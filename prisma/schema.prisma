@@ -7,12 +7,81 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Example model proving the Prisma -> migration -> Hasura -> GraphQL loop works end to end.
-// Delete it (and its migration) once you add your project's real models, then run
-// `pnpm db:migrate` to create the migration. Track new tables in the Hasura console
-// (http://localhost:8080, under Data) so they're exposed on the GraphQL API.
-model Example {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now())
+// Modeled after the entity contracts in app-de-agendamento-de-barbearia/services/types.ts.
+// Single barbershop: no staff/barber entity, slots are explicit date+time rows created by the admin.
+
+enum AppointmentStatus {
+  SCHEDULED
+  CANCELLED
+}
+
+/// A service the barbershop offers (e.g. haircut, beard trim).
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  /// Price in cents, to avoid floating point errors.
+  priceCents  Int
+  /// Estimated duration in minutes.
+  durationMin Int
+  /// If false, the service is hidden from clients.
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  appointmentServices AppointmentService[]
+}
+
+/// A barbershop client, uniquely identified by contact (phone or @instagram).
+/// Uniqueness is case-insensitive by convention: normalize (trim + lowercase)
+/// before writing/querying `contact`, the same way getOrCreateClient does in the reference app.
+model Client {
+  id           String        @id @default(cuid())
+  name         String
+  contact      String        @unique
+  createdAt    DateTime      @default(now())
+  appointments Appointment[]
+}
+
+/// A bookable date+time slot. Created explicitly by the admin (no recurring
+/// business-hours generation), one row per date+time combination.
+model Slot {
+  id           String        @id @default(cuid())
+  date         DateTime      @db.Date
+  /// Time of day in HH:mm, kept as a plain string to mirror the reference app.
+  time         String
+  appointments Appointment[]
+
+  @@unique([date, time])
+}
+
+/// A booking made by a client for a slot. Cancelling frees the slot up for a new
+/// appointment, so slotId is intentionally not unique at the DB level — "one active
+/// appointment per slot" is a business rule enforced in the app layer, matching the
+/// mock implementation (which checks for an existing SCHEDULED appointment on write).
+model Appointment {
+  id         String            @id @default(cuid())
+  slotId     String
+  clientId   String
+  status     AppointmentStatus @default(SCHEDULED)
+  /// Sum of the snapshotted service prices at booking time, in cents.
+  totalCents Int
+  createdAt  DateTime          @default(now())
+
+  slot     Slot                 @relation(fields: [slotId], references: [id])
+  client   Client               @relation(fields: [clientId], references: [id])
+  services AppointmentService[]
+}
+
+/// Snapshot of a service at booking time (name + price locked in), so later edits
+/// or deletions of the Service catalog don't change historical appointments.
+model AppointmentService {
+  id            String  @id @default(cuid())
+  appointmentId String
+  /// Nullable: the original service may be deleted later, the snapshot survives.
+  serviceId     String?
+  name          String
+  priceCents    Int
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  service     Service?    @relation(fields: [serviceId], references: [id], onDelete: SetNull)
 }
