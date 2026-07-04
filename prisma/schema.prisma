@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Example model proving the Prisma -> migration -> Hasura -> GraphQL loop works end to end.
+// Delete it (and its migration) once you add your project's real models, then run
+// `pnpm db:migrate` to create the migration. Track new tables in the Hasura console
+// (http://localhost:8080, under Data) so they're exposed on the GraphQL API.
+model Example {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+}
