@@ -6,9 +6,15 @@ async function handler(request: NextRequest) {
   const headers = new Headers(request.headers)
 
   headers.set("x-hasura-admin-secret", `${process.env.HASURA_SECRET}`)
-  // Once you add auth back, swap the line above for a per-request role/JWT,
-  // e.g. headers.set("Authorization", `Bearer ${token}`) and configure
-  // HASURA_GRAPHQL_JWT_SECRET in docker-compose.yml.
+  // The admin secret alone would grant unrestricted admin access; pinning the role
+  // to "public" makes Hasura enforce that role's permissions instead (Service/Slot
+  // select only, restricted columns on Appointment — see Hasura console > Data >
+  // Permissions). This route only ever serves the public booking page; admin reads
+  // and all writes go through app/api/admin/* + app/api/bookings (Prisma), not here.
+  // Once you add real end-user auth, swap this for a per-request role/JWT, e.g.
+  // headers.set("Authorization", `Bearer ${token}`) with HASURA_GRAPHQL_JWT_SECRET
+  // configured in docker-compose.yml.
+  headers.set("x-hasura-role", "public")
 
   const graphqlUrl = process.env.GRAPHQL_URL || "no-url-set"
 
