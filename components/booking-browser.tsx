@@ -237,9 +237,9 @@ export function BookingBrowser() {
                 <Input
                   id="contact"
                   className="pl-9"
-                  placeholder="(11) 99999-9999"
+                  placeholder="27999999999 ou @ch_du_corte"
                   value={contact}
-                  onChange={(e) => setContact(e.target.value)}
+                  onChange={(e) => setContact(e.target.value.replace(/\s/g, ""))}
                 />
               </div>
             </div>

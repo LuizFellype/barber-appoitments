@@ -34,8 +34,8 @@ export function MyAppointmentsSearch() {
           <Input
             id="search-contact"
             value={contact}
-            onChange={(e) => setContact(e.target.value)}
-            placeholder="(11) 99999-9999"
+            onChange={(e) => setContact(e.target.value.replace(/\s/g, ""))}
+            placeholder="27999999999 ou @ch_du_corte"
           />
         </div>
         <Button type="submit" disabled={isPending || !contact.trim()}>
