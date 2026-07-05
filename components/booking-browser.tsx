@@ -1,17 +1,20 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Scissors, Check, Clock, CalendarDays } from "lucide-react"
+import { Scissors, Check, Clock, CalendarDays, User, Phone } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { formatBRL, formatDateLong, weekdayShort } from "@/lib/format"
 import { useActiveServices, useAvailability } from "@/lib/api/client"
 
 // Ported from app-de-agendamento-de-barbearia/components/booking-flow.tsx, wired to
 // real data via useActiveServices/useAvailability instead of server-action props.
-// Client info + booking submission (step 3) is deferred to a follow-up change.
+// Booking submission itself is deferred to a follow-up change; name/contact are
+// collected here (step 3) but not sent anywhere yet.
 export function BookingBrowser() {
   const { data: services, isLoading: loadingServices, error: servicesError } = useActiveServices()
   const { data: availability, isLoading: loadingAvailability, error: availabilityError } = useAvailability()
@@ -19,8 +22,11 @@ export function BookingBrowser() {
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null)
+  const [name, setName] = useState("")
+  const [contact, setContact] = useState("")
 
   const effectiveDate = selectedDate ?? availability?.[0]?.date ?? null
+  const canBook = Boolean(name.trim() && contact.trim() && selectedSlotId && selectedServiceIds.length > 0)
 
   const selectedServices = useMemo(
     () => (services ?? []).filter((s) => selectedServiceIds.includes(s.id)),
@@ -147,6 +153,29 @@ export function BookingBrowser() {
             </>
           )}
         </Card>
+
+        <Card className="p-6">
+          <StepHeader n={3} icon={<User className="h-4 w-4" />} title="Seus dados" />
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="name">Nome</Label>
+              <Input id="name" placeholder="Seu nome" value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="contact">Telefone ou @instagram</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="contact"
+                  className="pl-9"
+                  placeholder="(11) 99999-9999"
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
       </div>
 
       <div className="lg:sticky lg:top-6 lg:self-start">
@@ -190,11 +219,17 @@ export function BookingBrowser() {
             <span className="text-2xl font-bold text-primary">{formatBRL(totalCents)}</span>
           </div>
 
-          <Button className="mt-4 w-full" disabled title="Confirmacao de agendamento chega no proximo passo">
+          <Button
+            className="mt-4 w-full"
+            disabled={!canBook}
+            title="Confirmacao de agendamento chega no proximo passo"
+          >
             Confirmar agendamento
           </Button>
           <p className="mt-2 text-center text-xs text-muted-foreground">
-            Selecao de servicos e horarios ja funciona. Confirmar reserva vem a seguir.
+            {canBook
+              ? "Tudo pronto, mas o envio do agendamento ainda nao esta implementado."
+              : "Preencha servicos, horario, nome e contato para continuar."}
           </p>
         </Card>
       </div>

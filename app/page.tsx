@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Scissors } from "lucide-react"
 import { BookingBrowser } from "@/components/booking-browser"
 
@@ -12,6 +13,9 @@ export default function Home() {
             </span>
             <span className="text-xl font-bold tracking-widest">CH2D</span>
           </div>
+          <Link href="/admin" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            Area do admin
+          </Link>
         </div>
       </header>
 

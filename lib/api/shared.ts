@@ -8,7 +8,13 @@ export async function fetchApi(endpoint: string, rest = {}) {
     rest
   );
 
-  return await result.json();
+  const body = result.status === 204 ? null : await result.json();
+
+  if (!result.ok) {
+    throw new Error(body?.error || result.statusText)
+  }
+
+  return body;
 }
 
 export interface CommumVariablesType {
