@@ -5,6 +5,7 @@ import { AdminAPI, type ServiceInput } from "./admin"
 const servicesKey = "AdminServices"
 const slotsKey = "AdminSlots"
 const appointmentsKey = "AdminAppointments"
+const statsKey = "AdminClientStats"
 
 function onErrorToast(title: string) {
   return (error: unknown) => toast({ title, description: `${error}` })
@@ -76,3 +77,6 @@ export const useCancelAppointment = (date: string) => {
     onError: onErrorToast("Erro ao cancelar agendamento"),
   })
 }
+
+export const useClientStats = () =>
+  useQuery({ queryKey: [statsKey], queryFn: () => AdminAPI.listClientStats() })

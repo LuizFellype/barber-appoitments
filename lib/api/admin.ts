@@ -37,6 +37,15 @@ export interface AdminAppointment {
   services: { serviceId: string | null; name: string; priceCents: number }[]
 }
 
+export interface AdminClientStat {
+  clientId: string
+  name: string
+  contact: string
+  bookingsCount: number
+  totalSpentCents: number
+  lastBookingDate: string | null
+}
+
 const withJson = (method: string, body?: unknown) => ({
   method,
   headers: { "content-type": "application/json" },
@@ -62,4 +71,6 @@ export const AdminAPI = {
     fetchApi(`admin/appointments?date=${encodeURIComponent(date)}`),
   cancelAppointment: (id: string): Promise<{ ok: boolean }> =>
     fetchApi(`admin/appointments/${id}/cancel`, withJson("POST")),
+
+  listClientStats: (): Promise<AdminClientStat[]> => fetchApi("admin/stats"),
 }

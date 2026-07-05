@@ -9,6 +9,7 @@ import { AdminAPI } from "@/lib/api/admin"
 import { ServicesManager } from "./services-manager"
 import { SlotsManager } from "./slots-manager"
 import { AppointmentsManager } from "./appointments-manager"
+import { StatsManager } from "./stats-manager"
 
 export function AdminDashboard() {
   const router = useRouter()
@@ -44,6 +45,7 @@ export function AdminDashboard() {
             <TabsTrigger value="services">Servicos</TabsTrigger>
             <TabsTrigger value="slots">Disponibilidade</TabsTrigger>
             <TabsTrigger value="appointments">Agendamentos</TabsTrigger>
+            <TabsTrigger value="stats">Estatisticas</TabsTrigger>
           </TabsList>
           <TabsContent value="services" className="mt-6">
             <ServicesManager />
@@ -53,6 +55,9 @@ export function AdminDashboard() {
           </TabsContent>
           <TabsContent value="appointments" className="mt-6">
             <AppointmentsManager />
+          </TabsContent>
+          <TabsContent value="stats" className="mt-6">
+            <StatsManager />
           </TabsContent>
         </Tabs>
       </div>
