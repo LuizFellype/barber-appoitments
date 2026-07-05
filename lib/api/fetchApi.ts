@@ -1,15 +1,17 @@
 import { fetchApi } from "./shared";
 
 // REST fetch strategy: every entry maps to a route under app/api/<endpoint>.
-// Add one enum member + endpoint mapping + variables type per new REST operation, e.g.:
-// Example = "Example" -> EndpointByOperationName.Example = "example" -> app/api/example/route.ts
+// Add one enum member + endpoint mapping + variables type per new REST operation.
 enum APIOperationNames {
+  CreateBooking = "CreateBooking",
 }
 
-const EndpointByOperationName: Record<string, string> = {}
+const EndpointByOperationName: Record<string, string> = {
+  [APIOperationNames.CreateBooking]: "bookings",
+}
 
 interface VariablesTypePerAPIOperationName {
-  [key: string]: any
+  [APIOperationNames.CreateBooking]: { name: string; contact: string; slotId: string; serviceIds: string[] }
 }
 
 const buildAPIGETRequest = <T>(endpoint: string, method = "GET") => async (variables: T) => {

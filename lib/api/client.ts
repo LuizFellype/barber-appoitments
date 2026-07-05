@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import API from ".";
 
 export interface Service {
@@ -44,5 +44,23 @@ export const useAvailability = () => {
         }
         return [...byDay.entries()].map(([date, slots]) => ({ date, slots }))
       }),
+  })
+}
+
+export interface CreateBookingInput {
+  name: string
+  contact: string
+  slotId: string
+  serviceIds: string[]
+}
+
+export const useCreateBooking = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (input: CreateBookingInput) => API.POST.CreateBooking(input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Availability"] })
+    },
   })
 }
