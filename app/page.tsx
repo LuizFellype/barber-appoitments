@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Scissors } from "lucide-react"
 import { BookingBrowser } from "@/components/booking-browser"
+import { MyAppointmentsSearch } from "@/components/my-appointments-search"
 
 export default function Home() {
   return (
@@ -28,8 +29,9 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-5xl px-4 py-8">
+      <div className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-8">
         <BookingBrowser />
+        <MyAppointmentsSearch />
       </div>
 
       <footer className="border-t border-border">

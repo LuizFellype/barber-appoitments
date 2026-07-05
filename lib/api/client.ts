@@ -64,3 +64,20 @@ export const useCreateBooking = () => {
     },
   })
 }
+
+export interface MyAppointment {
+  id: string
+  date: string
+  time: string
+  totalCents: number
+  services: { name: string; priceCents: number }[]
+}
+
+/** Explicit search-on-submit rather than a query keyed by contact, since this
+ * is a one-off lookup triggered by a form, not data that should stay cached
+ * or refetch as the user types. */
+export const useMyAppointments = () => {
+  return useMutation({
+    mutationFn: (contact: string): Promise<MyAppointment[]> => API.GET.MyAppointments({ contact }),
+  })
+}

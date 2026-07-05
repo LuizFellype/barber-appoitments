@@ -4,14 +4,17 @@ import { fetchApi } from "./shared";
 // Add one enum member + endpoint mapping + variables type per new REST operation.
 enum APIOperationNames {
   CreateBooking = "CreateBooking",
+  MyAppointments = "MyAppointments",
 }
 
 const EndpointByOperationName: Record<string, string> = {
   [APIOperationNames.CreateBooking]: "bookings",
+  [APIOperationNames.MyAppointments]: "my-appointments",
 }
 
 interface VariablesTypePerAPIOperationName {
   [APIOperationNames.CreateBooking]: { name: string; contact: string; slotId: string; serviceIds: string[] }
+  [APIOperationNames.MyAppointments]: { contact: string }
 }
 
 const buildAPIGETRequest = <T>(endpoint: string, method = "GET") => async (variables: T) => {
