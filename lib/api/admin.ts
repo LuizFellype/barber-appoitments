@@ -43,7 +43,9 @@ export interface AdminClientStat {
   contact: string
   bookingsCount: number
   totalSpentCents: number
+  /** Slot date/time of their most recent scheduled appointment (not when they booked it). */
   lastBookingDate: string | null
+  lastBookingTime: string | null
 }
 
 const withJson = (method: string, body?: unknown) => ({

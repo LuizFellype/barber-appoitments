@@ -44,7 +44,7 @@ export function StatsManager() {
                   </TableCell>
                   <TableCell className="text-right text-primary">{formatBRL(s.totalSpentCents)}</TableCell>
                   <TableCell className="text-muted-foreground">
-                    {s.lastBookingDate ? formatDateLong(s.lastBookingDate.slice(0, 10)) : "Nunca"}
+                    {s.lastBookingDate ? `${formatDateLong(s.lastBookingDate)} as ${s.lastBookingTime}` : "Nunca"}
                   </TableCell>
                 </TableRow>
               ))}
