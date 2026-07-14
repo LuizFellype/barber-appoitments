@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
     time: a.slot.time,
     totalCents: a.totalCents,
     maintenanceFeeCents: a.maintenanceFeeCents,
+    cancellationRequestedAt: a.cancellationRequestedAt,
     services: a.services.map((s) => ({ name: s.name, priceCents: s.priceCents })),
   }))
   results.sort((a, b) => (a.date === b.date ? a.time.localeCompare(b.time) : a.date.localeCompare(b.date)))

@@ -69,6 +69,11 @@ model Appointment {
   /// charged on top of totalCents to cover application maintenance.
   maintenanceFeeCents Int
   createdAt  DateTime          @default(now())
+  /// Set when the client asks to cancel from the public "my appointments" search.
+  /// This is a soft/advisory flag, not a real cancellation: the slot stays booked
+  /// and status stays SCHEDULED until the admin contacts the client to confirm
+  /// and cancels it for real from the admin panel.
+  cancellationRequestedAt DateTime?
 
   slot     Slot                 @relation(fields: [slotId], references: [id])
   client   Client               @relation(fields: [clientId], references: [id])

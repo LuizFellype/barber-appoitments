@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Clock, User, Phone, Ban } from "lucide-react"
+import { Clock, User, Phone, Ban, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
 import { formatBRL } from "@/lib/format"
 import type { AdminAppointment } from "@/lib/api/admin"
 import { useAdminAppointmentsByDay, useCancelAppointment } from "@/lib/api/admin-client"
@@ -46,11 +47,22 @@ export function AppointmentsManager() {
       ) : (
         <div className="flex flex-col gap-3">
           {appointments!.map((a) => (
-            <Card key={a.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <Card
+              key={a.id}
+              className={`flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between ${
+                a.cancellationRequestedAt ? "border-destructive/50 bg-destructive/5" : ""
+              }`}
+            >
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 font-medium">
                   <Clock className="h-4 w-4 text-primary" />
                   {a.time}
+                  {a.cancellationRequestedAt && (
+                    <Badge variant="destructive" className="ml-1 gap-1">
+                      <AlertTriangle className="h-3 w-3" />
+                      Cliente pediu cancelamento
+                    </Badge>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <User className="h-3.5 w-3.5" />

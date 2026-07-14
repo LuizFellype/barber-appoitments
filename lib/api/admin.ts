@@ -30,6 +30,8 @@ export interface AdminAppointment {
   status: "SCHEDULED" | "CANCELLED"
   totalCents: number
   maintenanceFeeCents: number
+  /** Set once the client requested cancellation via the public search; admin should reach out to confirm. */
+  cancellationRequestedAt: string | null
   createdAt: string
   date: string
   time: string

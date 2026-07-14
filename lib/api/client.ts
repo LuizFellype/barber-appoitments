@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import API from ".";
+import { fetchApi } from "./shared";
 
 export interface Service {
   id: string
@@ -71,6 +72,8 @@ export interface MyAppointment {
   time: string
   totalCents: number
   maintenanceFeeCents: number
+  /** Set once the client has requested cancellation; null while still active. */
+  cancellationRequestedAt: string | null
   services: { name: string; priceCents: number }[]
 }
 
@@ -80,5 +83,19 @@ export interface MyAppointment {
 export const useMyAppointments = () => {
   return useMutation({
     mutationFn: (contact: string): Promise<MyAppointment[]> => API.GET.MyAppointments({ contact }),
+  })
+}
+
+/** Flags an appointment as "client wants to cancel" (soft cancellation): the
+ * admin sees the request and contacts the client to confirm before actually
+ * cancelling it from the admin panel. Not a real cancellation by itself. */
+export const useRequestAppointmentCancellation = () => {
+  return useMutation({
+    mutationFn: ({ id, contact }: { id: string; contact: string }): Promise<{ ok: boolean; cancellationRequestedAt: string }> =>
+      fetchApi(`my-appointments/${id}/cancel-request`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ contact }),
+      }),
   })
 }
