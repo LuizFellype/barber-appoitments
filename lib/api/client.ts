@@ -70,6 +70,7 @@ export interface MyAppointment {
   date: string
   time: string
   totalCents: number
+  maintenanceFeeCents: number
   services: { name: string; priceCents: number }[]
 }
 

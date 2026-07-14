@@ -64,10 +64,15 @@ export function MyAppointmentsSearch() {
                       {a.time}
                     </span>
                   </div>
-                  <span className="font-semibold text-primary">{formatBRL(a.totalCents)}</span>
+                  <span className="font-semibold text-primary">
+                    {formatBRL(a.totalCents + a.maintenanceFeeCents)}
+                  </span>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {a.services.map((s) => s.name).join(", ") || "Sem servicos"}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Inclui taxa de manutencao de {formatBRL(a.maintenanceFeeCents)}
                 </p>
               </div>
             ))

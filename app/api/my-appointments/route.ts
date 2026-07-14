@@ -38,6 +38,7 @@ export async function GET(request: NextRequest) {
     date: a.slot.date.toISOString().slice(0, 10),
     time: a.slot.time,
     totalCents: a.totalCents,
+    maintenanceFeeCents: a.maintenanceFeeCents,
     services: a.services.map((s) => ({ name: s.name, priceCents: s.priceCents })),
   }))
   results.sort((a, b) => (a.date === b.date ? a.time.localeCompare(b.time) : a.date.localeCompare(b.date)))

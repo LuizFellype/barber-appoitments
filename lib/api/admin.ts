@@ -29,6 +29,7 @@ export interface AdminAppointment {
   id: string
   status: "SCHEDULED" | "CANCELLED"
   totalCents: number
+  maintenanceFeeCents: number
   createdAt: string
   date: string
   time: string

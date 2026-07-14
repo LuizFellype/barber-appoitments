@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { MAINTENANCE_FEE_CENTS } from "@/lib/pricing"
 
 /**
  * Creates a booking: upserts the client by contact, re-checks the slot is still
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
           slotId,
           clientId: client.id,
           totalCents,
+          maintenanceFeeCents: MAINTENANCE_FEE_CENTS,
           services: {
             create: services.map((s) => ({ serviceId: s.id, name: s.name, priceCents: s.priceCents })),
           },

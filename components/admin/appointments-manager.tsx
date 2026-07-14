@@ -61,9 +61,14 @@ export function AppointmentsManager() {
                 <p className="text-sm text-muted-foreground">
                   {a.services.map((s) => s.name).join(", ") || "Sem servicos"}
                 </p>
+                <p className="text-xs text-muted-foreground">
+                  Servicos {formatBRL(a.totalCents)} + taxa de manutencao {formatBRL(a.maintenanceFeeCents)}
+                </p>
               </div>
               <div className="flex items-center gap-4">
-                <span className="font-semibold text-primary">{formatBRL(a.totalCents)}</span>
+                <span className="font-semibold text-primary">
+                  {formatBRL(a.totalCents + a.maintenanceFeeCents)}
+                </span>
                 <Button
                   variant="ghost"
                   size="icon"

@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { formatBRL, formatDateLong, weekdayShort } from "@/lib/format"
+import { MAINTENANCE_FEE_CENTS } from "@/lib/pricing"
 import { useActiveServices, useAvailability, useCreateBooking } from "@/lib/api/client"
 
 // Ported from app-de-agendamento-de-barbearia/components/booking-flow.tsx, wired to
@@ -72,6 +73,7 @@ export function BookingBrowser() {
     [services, selectedServiceIds],
   )
   const totalCents = selectedServices.reduce((sum, s) => sum + s.priceCents, 0)
+  const grandTotalCents = selectedServices.length > 0 ? totalCents + MAINTENANCE_FEE_CENTS : 0
   const totalDuration = selectedServices.reduce((sum, s) => sum + s.durationMin, 0)
 
   const daySlots = availability?.find((d) => d.date === effectiveDate)?.slots ?? []
@@ -261,6 +263,10 @@ export function BookingBrowser() {
                   <span className="text-muted-foreground">{formatBRL(s.priceCents)}</span>
                 </li>
               ))}
+              <li className="flex items-center justify-between text-sm">
+                <span>Taxa de manutencao</span>
+                <span className="text-muted-foreground">{formatBRL(MAINTENANCE_FEE_CENTS)}</span>
+              </li>
             </ul>
           )}
 
@@ -285,7 +291,7 @@ export function BookingBrowser() {
                 <p className="text-xs text-muted-foreground">aprox. {totalDuration} min</p>
               )}
             </div>
-            <span className="text-2xl font-bold text-primary">{formatBRL(totalCents)}</span>
+            <span className="text-2xl font-bold text-primary">{formatBRL(grandTotalCents)}</span>
           </div>
 
           <Button className="mt-4 w-full" disabled={!canBook} onClick={() => setConfirmOpen(true)}>
@@ -316,6 +322,10 @@ export function BookingBrowser() {
                   <span className="text-muted-foreground">{formatBRL(s.priceCents)}</span>
                 </li>
               ))}
+              <li className="flex items-center justify-between">
+                <span>Taxa de manutencao</span>
+                <span className="text-muted-foreground">{formatBRL(MAINTENANCE_FEE_CENTS)}</span>
+              </li>
             </ul>
 
             {effectiveDate && (
@@ -345,7 +355,7 @@ export function BookingBrowser() {
             <Separator />
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Total</span>
-              <span className="text-xl font-bold text-primary">{formatBRL(totalCents)}</span>
+              <span className="text-xl font-bold text-primary">{formatBRL(grandTotalCents)}</span>
             </div>
 
             {createBooking.isError && (

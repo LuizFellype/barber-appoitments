@@ -46,7 +46,7 @@ export async function GET() {
       SELECT
         a."clientId",
         COUNT(*)::int AS "bookingsCount",
-        SUM(a."totalCents")::int AS "totalSpentCents"
+        SUM(a."totalCents" + a."maintenanceFeeCents")::int AS "totalSpentCents"
       FROM "Appointment" a
       WHERE a."status" = 'SCHEDULED'
       GROUP BY a."clientId"

@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
       id: a.id,
       status: a.status,
       totalCents: a.totalCents,
+      maintenanceFeeCents: a.maintenanceFeeCents,
       createdAt: a.createdAt,
       date: a.slot.date.toISOString().slice(0, 10),
       time: a.slot.time,

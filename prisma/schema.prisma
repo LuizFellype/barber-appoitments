@@ -65,6 +65,9 @@ model Appointment {
   status     AppointmentStatus @default(SCHEDULED)
   /// Sum of the snapshotted service prices at booking time, in cents.
   totalCents Int
+  /// Fixed platform fee snapshotted at booking time (see lib/pricing.ts),
+  /// charged on top of totalCents to cover application maintenance.
+  maintenanceFeeCents Int
   createdAt  DateTime          @default(now())
 
   slot     Slot                 @relation(fields: [slotId], references: [id])
