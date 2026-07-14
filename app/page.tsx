@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Scissors } from "lucide-react"
 import { BookingBrowser } from "@/components/booking-browser"
 import { MyAppointmentsSearch } from "@/components/my-appointments-search"
+import { InstallPwaButton } from "@/components/install-pwa-button"
 
 export default function Home() {
   return (
@@ -12,11 +13,14 @@ export default function Home() {
             <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <Scissors className="h-5 w-5" />
             </span>
-            <span className="text-xl font-bold tracking-widest">CH2D</span>
+            <span className="text-xl font-bold tracking-widest">CH&2D</span>
           </div>
-          <Link href="/admin" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Area do admin
-          </Link>
+          <div className="flex items-center gap-4">
+            <InstallPwaButton />
+            <Link href="/admin" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+              Area do admin
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -35,7 +39,7 @@ export default function Home() {
       </div>
 
       <footer className="border-t border-border">
-        <div className="mx-auto max-w-5xl px-4 py-6 text-sm text-muted-foreground">Ch2d - Barbearia</div>
+        <div className="mx-auto max-w-5xl px-4 py-6 text-sm text-muted-foreground">Ch&2d - Barbearia</div>
       </footer>
     </main>
   )

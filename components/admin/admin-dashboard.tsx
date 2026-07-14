@@ -30,7 +30,7 @@ export function AdminDashboard() {
             <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <Scissors className="h-5 w-5" />
             </span>
-            <span className="text-xl font-bold tracking-widest">CH2D ADMIN</span>
+            <span className="text-xl font-bold tracking-widest">CH&2D ADMIN</span>
           </div>
           <Button variant="ghost" onClick={handleSignOut} disabled={pending}>
             <LogOut className="h-4 w-4" />
