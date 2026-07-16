@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAdmin } from "@/lib/admin-auth"
 import { prisma } from "@/lib/prisma"
+import { getVisitNumbers, isMilestoneVisit } from "@/lib/loyalty"
 
 /** GET /api/admin/appointments?date=YYYY-MM-DD -> active appointments for that day, enriched for the admin UI. */
 export async function GET(request: NextRequest) {
@@ -18,19 +19,26 @@ export async function GET(request: NextRequest) {
     include: { slot: true, client: true, services: true },
   })
 
+  const visitNumbers = await getVisitNumbers(appointments.map((a) => a.id))
+
   return NextResponse.json(
-    appointments.map((a) => ({
-      id: a.id,
-      status: a.status,
-      totalCents: a.totalCents,
-      maintenanceFeeCents: a.maintenanceFeeCents,
-      cancellationRequestedAt: a.cancellationRequestedAt,
-      createdAt: a.createdAt,
-      date: a.slot.date.toISOString().slice(0, 10),
-      time: a.slot.time,
-      clientName: a.client.name,
-      clientContact: a.client.contact,
-      services: a.services.map((s) => ({ serviceId: s.serviceId, name: s.name, priceCents: s.priceCents })),
-    })),
+    appointments.map((a) => {
+      const visitNumber = visitNumbers.get(a.id) ?? 0
+      return {
+        id: a.id,
+        status: a.status,
+        totalCents: a.totalCents,
+        maintenanceFeeCents: a.maintenanceFeeCents,
+        cancellationRequestedAt: a.cancellationRequestedAt,
+        createdAt: a.createdAt,
+        date: a.slot.date.toISOString().slice(0, 10),
+        time: a.slot.time,
+        clientName: a.client.name,
+        clientContact: a.client.contact,
+        services: a.services.map((s) => ({ serviceId: s.serviceId, name: s.name, priceCents: s.priceCents })),
+        visitNumber,
+        isMilestone: isMilestoneVisit(visitNumber),
+      }
+    }),
   )
 }

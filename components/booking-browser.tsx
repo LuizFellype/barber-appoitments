@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { Scissors, Check, Clock, CalendarDays, User, Phone, RefreshCw } from "lucide-react"
+import { Scissors, Check, Clock, CalendarDays, User, Phone, RefreshCw, Gift } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -98,6 +98,13 @@ export function BookingBrowser() {
         </div>
         <h2 className="text-2xl font-semibold tracking-wide">Tudo certo!</h2>
         <p className="mt-2 text-muted-foreground text-pretty">Agendamento confirmado! Te esperamos na barbearia.</p>
+        {createBooking.data?.isMilestone ? (
+          <div className="mt-4 flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 p-3 text-sm text-primary text-pretty">
+            <Gift className="h-5 w-5 shrink-0" />
+            Este é o seu {createBooking.data.visitNumber}° agendamento com a gente — voce ganha um brinde surpresa
+            na barbearia!
+          </div>
+        ): <p className="mt-2 text-muted text-pretty text-sm">Este é seu {createBooking.data?.visitNumber}° agendamento. A cada 5 agendamentos pelo site, a gente fornece um presente misterioso ou um desconto.</p>}
         <Button className="mt-6 w-full" onClick={reset}>
           Fazer outro agendamento
         </Button>

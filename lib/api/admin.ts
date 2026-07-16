@@ -38,6 +38,10 @@ export interface AdminAppointment {
   clientName: string
   clientContact: string
   services: { serviceId: string | null; name: string; priceCents: number }[]
+  /** 1-based position among the client's non-cancelled appointments (booking order). */
+  visitNumber: number
+  /** True every MILESTONE_INTERVAL-th visit (see lib/loyalty.ts) — surprise gift time. */
+  isMilestone: boolean
 }
 
 export interface AdminClientStat {

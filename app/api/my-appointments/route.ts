@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { getVisitNumbers, isMilestoneVisit } from "@/lib/loyalty"
 
 /**
  * Looks up a client's upcoming appointments by contact (phone/@instagram).
@@ -33,15 +34,22 @@ export async function GET(request: NextRequest) {
     include: { slot: true, services: true },
   })
 
-  const results = appointments.map((a) => ({
-    id: a.id,
-    date: a.slot.date.toISOString().slice(0, 10),
-    time: a.slot.time,
-    totalCents: a.totalCents,
-    maintenanceFeeCents: a.maintenanceFeeCents,
-    cancellationRequestedAt: a.cancellationRequestedAt,
-    services: a.services.map((s) => ({ name: s.name, priceCents: s.priceCents })),
-  }))
+  const visitNumbers = await getVisitNumbers(appointments.map((a) => a.id))
+
+  const results = appointments.map((a) => {
+    const visitNumber = visitNumbers.get(a.id) ?? 0
+    return {
+      id: a.id,
+      date: a.slot.date.toISOString().slice(0, 10),
+      time: a.slot.time,
+      totalCents: a.totalCents,
+      maintenanceFeeCents: a.maintenanceFeeCents,
+      cancellationRequestedAt: a.cancellationRequestedAt,
+      services: a.services.map((s) => ({ name: s.name, priceCents: s.priceCents })),
+      visitNumber,
+      isMilestone: isMilestoneVisit(visitNumber),
+    }
+  })
   results.sort((a, b) => (a.date === b.date ? a.time.localeCompare(b.time) : a.date.localeCompare(b.date)))
 
   return NextResponse.json(results)

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { MAINTENANCE_FEE_CENTS } from "@/lib/pricing"
+import { isMilestoneVisit } from "@/lib/loyalty"
 
 /**
  * Creates a booking: upserts the client by contact, re-checks the slot is still
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
 
       const totalCents = services.reduce((sum, s) => sum + s.priceCents, 0)
 
-      return tx.appointment.create({
+      const created = await tx.appointment.create({
         data: {
           slotId,
           clientId: client.id,
@@ -53,6 +54,12 @@ export async function POST(request: NextRequest) {
         },
         include: { services: true },
       })
+
+      // The just-created appointment is the client's most recent SCHEDULED one,
+      // so this count is also its 1-based position in their booking history.
+      const visitNumber = await tx.appointment.count({ where: { clientId: client.id, status: "SCHEDULED" } })
+
+      return { ...created, visitNumber, isMilestone: isMilestoneVisit(visitNumber) }
     })
 
     return NextResponse.json(appointment, { status: 201 })

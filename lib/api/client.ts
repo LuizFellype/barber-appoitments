@@ -55,11 +55,19 @@ export interface CreateBookingInput {
   serviceIds: string[]
 }
 
+export interface CreateBookingResult {
+  id: string
+  /** 1-based position among the client's non-cancelled appointments (booking order). */
+  visitNumber: number
+  /** True every MILESTONE_INTERVAL-th visit (see lib/loyalty.ts) — surprise gift time. */
+  isMilestone: boolean
+}
+
 export const useCreateBooking = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (input: CreateBookingInput) => API.POST.CreateBooking(input),
+    mutationFn: (input: CreateBookingInput): Promise<CreateBookingResult> => API.POST.CreateBooking(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Availability"] })
     },
@@ -75,6 +83,10 @@ export interface MyAppointment {
   /** Set once the client has requested cancellation; null while still active. */
   cancellationRequestedAt: string | null
   services: { name: string; priceCents: number }[]
+  /** 1-based position among the client's non-cancelled appointments (booking order). */
+  visitNumber: number
+  /** True every MILESTONE_INTERVAL-th visit (see lib/loyalty.ts) — surprise gift time. */
+  isMilestone: boolean
 }
 
 /** Explicit search-on-submit rather than a query keyed by contact, since this

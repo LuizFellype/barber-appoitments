@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search, CalendarDays, Clock, Ban } from "lucide-react"
+import { Search, CalendarDays, Clock, Ban, Gift } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -110,6 +110,12 @@ export function MyAppointmentsSearch() {
                 <p className="mt-1 text-xs text-muted-foreground">
                   Inclui taxa de manutencao de {formatBRL(a.maintenanceFeeCents)}
                 </p>
+                {a.isMilestone && (
+                  <p className="mt-2 flex items-center gap-1.5 text-xs font-medium text-primary">
+                    <Gift className="h-3.5 w-3.5" />
+                    Seu {a.visitNumber}o agendamento — brinde surpresa te esperando na barbearia!
+                  </p>
+                )}
                 {a.cancellationRequestedAt && (
                   <p className="mt-2 text-xs font-medium text-destructive">
                     Cancelamento solicitado. Aguarde nosso contato para confirmar.

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Clock, User, Phone, Ban, AlertTriangle } from "lucide-react"
+import { Clock, User, Phone, Ban, AlertTriangle, Gift } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -57,6 +57,12 @@ export function AppointmentsManager() {
                 <div className="flex items-center gap-2 font-medium">
                   <Clock className="h-4 w-4 text-primary" />
                   {a.time}
+                  {a.isMilestone && (
+                    <Badge className="ml-1 gap-1 bg-primary/15 text-primary hover:bg-primary/15">
+                      <Gift className="h-3 w-3" />
+                      {a.visitNumber}o agendamento — brinde!
+                    </Badge>
+                  )}
                   {a.cancellationRequestedAt && (
                     <Badge variant="destructive" className="ml-1 gap-1">
                       <AlertTriangle className="h-3 w-3" />
