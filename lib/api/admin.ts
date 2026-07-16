@@ -55,6 +55,15 @@ export interface AdminClientStat {
   lastBookingTime: string | null
 }
 
+export interface AdminStatsSummary {
+  from: string
+  to: string
+  appointmentsCount: number
+  /** Sum of service prices (goes to the barbershop), excludes the maintenance fee. */
+  servicesCents: number
+  maintenanceFeeCents: number
+}
+
 const withJson = (method: string, body?: unknown) => ({
   method,
   headers: { "content-type": "application/json" },
@@ -82,4 +91,6 @@ export const AdminAPI = {
     fetchApi(`admin/appointments/${id}/cancel`, withJson("POST")),
 
   listClientStats: (): Promise<AdminClientStat[]> => fetchApi("admin/stats"),
+  getStatsSummary: (from: string, to: string): Promise<AdminStatsSummary> =>
+    fetchApi(`admin/stats/summary?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`),
 }

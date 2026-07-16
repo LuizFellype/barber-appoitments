@@ -6,6 +6,7 @@ const servicesKey = "AdminServices"
 const slotsKey = "AdminSlots"
 const appointmentsKey = "AdminAppointments"
 const statsKey = "AdminClientStats"
+const statsSummaryKey = "AdminStatsSummary"
 
 function onErrorToast(title: string) {
   return (error: unknown) => toast({ title, description: `${error}` })
@@ -80,3 +81,10 @@ export const useCancelAppointment = (date: string) => {
 
 export const useClientStats = () =>
   useQuery({ queryKey: [statsKey], queryFn: () => AdminAPI.listClientStats() })
+
+export const useStatsSummary = (from: string, to: string) =>
+  useQuery({
+    queryKey: [statsSummaryKey, from, to],
+    queryFn: () => AdminAPI.getStatsSummary(from, to),
+    enabled: !!from && !!to,
+  })
