@@ -4,4 +4,4 @@
  * AppointmentService price-snapshot pattern) so later changes to this
  * constant don't alter historical appointments.
  */
-export const MAINTENANCE_FEE_CENTS = 200
+export const MAINTENANCE_FEE_CENTS = 250
