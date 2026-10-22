@@ -50,7 +50,7 @@ export default function StreetwearConceito() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/"
+                href="/agendar"
                 className="bg-black px-7 py-3 text-sm font-semibold uppercase tracking-widest text-white transition hover:bg-black/80"
               >
                 Agendar
@@ -132,7 +132,7 @@ export default function StreetwearConceito() {
           Sem fila, sem recado perdido no WhatsApp. Escolha o serviço e o horário direto por aqui.
         </p>
         <Link
-          href="/"
+          href="/agendar"
           className="mt-8 inline-block bg-white px-10 py-4 text-sm font-semibold uppercase tracking-widest text-black transition hover:bg-white/90"
         >
           Marcar agora

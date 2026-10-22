@@ -1,7 +1,7 @@
 {
-  "theme_color": "#16A34A",
-  "background_color": "#16A34A",
-  "start_url": "/?source=pwa",
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "start_url": "/agendar?source=pwa",
   "orientation": "portrait",
   "display": "standalone",
   "scope": "/",

@@ -56,7 +56,7 @@ export default function ComunidadeConceito() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
-            href="/"
+            href="/agendar"
             className="rounded-full bg-black px-8 py-3 text-base font-semibold text-white transition hover:bg-black/80"
           >
             Marcar meu horário
@@ -136,7 +136,7 @@ export default function ComunidadeConceito() {
           Agende seu horário e venha conhecer de perto por que a Ch&amp;2d é mais que uma barbearia.
         </p>
         <Link
-          href="/"
+          href="/agendar"
           className="mt-7 inline-block rounded-full bg-white px-9 py-3 text-base font-semibold text-black transition hover:bg-white/90"
         >
           Marcar meu horário

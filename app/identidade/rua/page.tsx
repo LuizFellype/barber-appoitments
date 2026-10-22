@@ -68,7 +68,7 @@ export default function RuaConceito() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <Link
-            href="/"
+            href="/agendar"
             className="rounded-none border-2 border-white bg-white px-7 py-3 text-sm font-bold uppercase tracking-widest text-black transition hover:bg-transparent hover:text-white"
           >
             Marcar horário
