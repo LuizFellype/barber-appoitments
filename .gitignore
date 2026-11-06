@@ -32,3 +32,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# PEI I college documents (personal data / signed docs — keep out of this public repo)
+/college-doc/
