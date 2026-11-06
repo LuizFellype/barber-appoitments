@@ -62,7 +62,9 @@ export default function ComunidadeConceito() {
             Marcar meu horário
           </Link>
           <a
-            href="#"
+            href="https://wa.me/5527992741895"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-full border border-black/15 px-8 py-3 text-base font-semibold text-black/70 transition hover:border-black hover:text-black"
           >
             <MessageCircle className="h-4 w-4" /> Falar no WhatsApp
@@ -146,10 +148,22 @@ export default function ComunidadeConceito() {
       <footer className="flex flex-col items-center gap-3 px-6 py-10 text-center text-black/40">
         <p className="text-xs">Feito com orgulho, na e para a comunidade.</p>
         <div className="flex gap-4">
-          <a href="#" aria-label="Instagram" className="hover:text-black">
+          <a
+            href="https://www.instagram.com/ch_du_corte1/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="hover:text-black"
+          >
             <Instagram className="h-5 w-5" />
           </a>
-          <a href="#" aria-label="WhatsApp" className="hover:text-black">
+          <a
+            href="https://wa.me/5527992741895"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            className="hover:text-black"
+          >
             <MessageCircle className="h-5 w-5" />
           </a>
         </div>

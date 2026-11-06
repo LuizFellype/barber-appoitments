@@ -74,7 +74,9 @@ export default function Home() {
             Marcar horário
           </Link>
           <a
-            href="#"
+            href="https://www.instagram.com/ch_du_corte1/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-none border-2 border-white/40 px-7 py-3 text-sm font-bold uppercase tracking-widest text-white/80 transition hover:border-white hover:text-white"
           >
             <Instagram className="h-4 w-4" /> Seguir
@@ -164,10 +166,22 @@ export default function Home() {
         <LogoBadge tone="light" className="h-14 w-14" />
         <p className="text-xs uppercase tracking-widest">Feito na comunidade, pra comunidade.</p>
         <div className="flex gap-4">
-          <a href="#" aria-label="Instagram" className="hover:text-white">
+          <a
+            href="https://www.instagram.com/ch_du_corte1/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="hover:text-white"
+          >
             <Instagram className="h-5 w-5" />
           </a>
-          <a href="#" aria-label="WhatsApp" className="hover:text-white">
+          <a
+            href="https://wa.me/5527992741895"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            className="hover:text-white"
+          >
             <MessageCircle className="h-5 w-5" />
           </a>
         </div>

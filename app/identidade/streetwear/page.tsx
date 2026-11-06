@@ -56,7 +56,9 @@ export default function StreetwearConceito() {
                 Agendar
               </Link>
               <a
-                href="#"
+                href="https://www.instagram.com/ch_du_corte1/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 border border-black/20 px-7 py-3 text-sm font-semibold uppercase tracking-widest text-black/70 transition hover:border-black hover:text-black"
               >
                 <Instagram className="h-4 w-4" /> Instagram
@@ -142,10 +144,22 @@ export default function StreetwearConceito() {
       <footer className="flex flex-col items-center gap-4 border-t border-black/10 px-6 py-10 text-center">
         <LogoBadge tone="dark" className="h-12 w-12" />
         <div className="flex gap-4 text-black/50">
-          <a href="#" aria-label="Instagram" className="hover:text-black">
+          <a
+            href="https://www.instagram.com/ch_du_corte1/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="hover:text-black"
+          >
             <Instagram className="h-5 w-5" />
           </a>
-          <a href="#" aria-label="WhatsApp" className="hover:text-black">
+          <a
+            href="https://wa.me/5527992741895"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp"
+            className="hover:text-black"
+          >
             <MessageCircle className="h-5 w-5" />
           </a>
         </div>
