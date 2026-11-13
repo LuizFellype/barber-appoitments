@@ -35,3 +35,9 @@ next-env.d.ts
 
 # PEI I college documents (personal data / signed docs — keep out of this public repo)
 /college-doc/
+
+# OS / editor cruft
+.DS_Store
+
+# local Claude Code tooling config (machine-specific, not shareable)
+/.claude/
