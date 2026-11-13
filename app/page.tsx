@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Instagram, MessageCircle, Scissors } from "lucide-react"
 import { LogoBadge } from "@/components/brand/logo-badge"
+import { PhotoGallery } from "@/components/site/photo-gallery"
 
 const PILARES = [
   {
@@ -18,12 +19,36 @@ const PILARES = [
 ]
 
 const GALERIA = [
-  "Cliente saindo satisfeito depois do degradê, Ch&2d, 2026",
-  "Movimento de sábado na barbearia, comunidade reunida",
-  "Detalhe do acabamento navalhado, estilo streetwear",
-  "Roda de conversa esperando a vez, som ligado no fundo",
-  "Mural da barbearia pintado por artista local",
-  "Criança da comunidade no primeiro corte, sorriso de orelha a orelha",
+  {
+    legenda: "Detalhe do acabamento navalhado, estilo streetwear",
+    a: "/gallery/g1-a.jpg",
+    b: "/gallery/g1-b.jpg",
+  },
+  {
+    legenda: "Movimento de sábado na barbearia, comunidade reunida",
+    a: "/gallery/g2-a.jpg",
+    b: "/gallery/g2-b.jpg",
+  },
+  {
+    legenda: "Ação social: corte gratuito pra criançada da comunidade",
+    a: "/gallery/g3-a.jpg",
+    b: "/gallery/g3-b.jpg",
+  },
+  {
+    legenda: "Cliente saindo satisfeito depois do degradê, Ch&2d",
+    a: "/gallery/g4-a.jpg",
+    b: "/gallery/g4-b.jpg",
+  },
+  {
+    legenda: "Estilo e atitude, cada cliente com a própria identidade",
+    a: "/gallery/g5-a.jpg",
+    b: "/gallery/g5-b.jpg",
+  },
+  {
+    legenda: "Mais um dia de ação social, levando corte de qualidade pra quebrada",
+    a: "/gallery/g6-a.jpg",
+    b: "/gallery/g6-b.jpg",
+  },
 ]
 
 export default function Home() {
@@ -135,21 +160,7 @@ export default function Home() {
       {/* GALERIA */}
       <section className="relative z-10 mx-auto max-w-5xl px-5 py-16">
         <h2 className="mb-8 text-center text-sm uppercase tracking-[0.4em] text-white/50">Registros</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {GALERIA.map((legenda, i) => (
-            <figure key={i} className="group relative aspect-square overflow-hidden border border-white/15 bg-white/5">
-              <div className="flex h-full w-full items-center justify-center text-white/20">
-                <Scissors className="h-8 w-8" />
-              </div>
-              <figcaption className="absolute inset-x-0 bottom-0 bg-black/80 p-2 text-[10px] leading-tight text-white/70 opacity-0 transition group-hover:opacity-100">
-                {legenda}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-        <p className="mt-4 text-center text-xs text-white/30">
-          [Espaço reservado para fotos reais do dia a dia da barbearia — cada uma com legenda]
-        </p>
+        <PhotoGallery items={GALERIA} />
       </section>
 
       {/* DEPOIMENTO */}
