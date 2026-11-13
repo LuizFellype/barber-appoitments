@@ -36,6 +36,7 @@ export function BookingBrowser() {
 
   const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>([])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null)
   const [name, setName] = useState("")
   const [contact, setContact] = useState("")
@@ -61,6 +62,7 @@ export function BookingBrowser() {
   function reset() {
     setSelectedServiceIds([])
     setSelectedDate(null)
+    setSelectedTime(null)
     setSelectedSlotId(null)
     setName("")
     setContact("")
@@ -77,6 +79,12 @@ export function BookingBrowser() {
   const totalDuration = selectedServices.reduce((sum, s) => sum + s.durationMin, 0)
 
   const daySlots = availability?.find((d) => d.date === effectiveDate)?.slots ?? []
+  const dayTimes = useMemo(
+    () => [...new Set(daySlots.map((s) => s.time))].sort((a, b) => a.localeCompare(b)),
+    [daySlots],
+  )
+  const barberOptions = daySlots.filter((s) => s.time === selectedTime)
+  const selectedSlot = daySlots.find((s) => s.id === selectedSlotId)
 
   function toggleService(id: string) {
     setSelectedServiceIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
@@ -196,6 +204,7 @@ export function BookingBrowser() {
                       type="button"
                       onClick={() => {
                         setSelectedDate(day.date)
+                        setSelectedTime(null)
                         setSelectedSlotId(null)
                       }}
                       className={`flex min-w-16 flex-col items-center rounded-lg border px-3 py-2 transition-colors ${
@@ -209,25 +218,54 @@ export function BookingBrowser() {
                 })}
               </div>
               <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
-                {daySlots.map((slot) => {
-                  const active = slot.id === selectedSlotId
+                {dayTimes.map((time) => {
+                  const active = time === selectedTime
                   return (
                     <button
-                      key={slot.id}
+                      key={time}
                       type="button"
-                      onClick={() => setSelectedSlotId(slot.id)}
+                      onClick={() => {
+                        setSelectedTime(time)
+                        setSelectedSlotId(null)
+                      }}
                       className={`rounded-lg border py-2 text-sm font-medium transition-colors ${
                         active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-secondary/40 hover:border-primary/50"
                       }`}
                     >
-                      {slot.time}
+                      {time}
                     </button>
                   )
                 })}
-                {daySlots.length === 0 && (
+                {dayTimes.length === 0 && (
                   <p className="col-span-full text-sm text-muted-foreground">Sem horarios livres neste dia.</p>
                 )}
               </div>
+
+              {selectedTime && (
+                <div className="mt-4">
+                  <Label>Escolha o barbeiro</Label>
+                  <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {barberOptions.map((slot) => {
+                      const active = slot.id === selectedSlotId
+                      return (
+                        <button
+                          key={slot.id}
+                          type="button"
+                          onClick={() => setSelectedSlotId(slot.id)}
+                          className={`flex items-center justify-center gap-2 rounded-lg border py-2 text-sm font-medium transition-colors ${
+                            active
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-secondary/40 hover:border-primary/50"
+                          }`}
+                        >
+                          <User className="h-3.5 w-3.5" />
+                          {slot.barberName}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
             </>
           )}
         </Card>
@@ -285,7 +323,11 @@ export function BookingBrowser() {
               </div>
               <div className="mt-1 flex items-center gap-2 text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                {daySlots.find((s) => s.id === selectedSlotId)?.time}
+                {selectedSlot?.time}
+              </div>
+              <div className="mt-1 flex items-center gap-2 text-muted-foreground">
+                <User className="h-4 w-4" />
+                {selectedSlot?.barberName}
               </div>
             </div>
           )}
@@ -343,7 +385,11 @@ export function BookingBrowser() {
                 </div>
                 <div className="mt-1 flex items-center gap-2 text-muted-foreground">
                   <Clock className="h-4 w-4" />
-                  {daySlots.find((s) => s.id === selectedSlotId)?.time}
+                  {selectedSlot?.time}
+                </div>
+                <div className="mt-1 flex items-center gap-2 text-muted-foreground">
+                  <User className="h-4 w-4" />
+                  {selectedSlot?.barberName}
                 </div>
               </div>
             )}

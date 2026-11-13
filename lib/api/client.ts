@@ -16,6 +16,8 @@ export interface Slot {
   date: string
   /** HH:mm. */
   time: string
+  barberId: string
+  barberName: string
 }
 
 export interface DayAvailability {
@@ -37,14 +39,17 @@ export const useAvailability = () => {
   return useQuery({
     queryKey: ["Availability", today],
     queryFn: (): Promise<DayAvailability[]> =>
-      API.Query.Availability({ today }).then((data: { Slot: Slot[] }): DayAvailability[] => {
-        const byDay = new Map<string, Slot[]>()
-        for (const slot of data.Slot) {
-          if (!byDay.has(slot.date)) byDay.set(slot.date, [])
-          byDay.get(slot.date)!.push(slot)
-        }
-        return [...byDay.entries()].map(([date, slots]) => ({ date, slots }))
-      }),
+      API.Query.Availability({ today }).then(
+        (data: { Slot: (Omit<Slot, "barberName"> & { Barber: { name: string } })[] }): DayAvailability[] => {
+          const byDay = new Map<string, Slot[]>()
+          for (const { Barber, ...slot } of data.Slot) {
+            const withBarber = { ...slot, barberName: Barber.name }
+            if (!byDay.has(slot.date)) byDay.set(slot.date, [])
+            byDay.get(slot.date)!.push(withBarber)
+          }
+          return [...byDay.entries()].map(([date, slots]) => ({ date, slots }))
+        },
+      ),
   })
 }
 
@@ -78,6 +83,7 @@ export interface MyAppointment {
   id: string
   date: string
   time: string
+  barberName: string
   totalCents: number
   maintenanceFeeCents: number
   /** Set once the client has requested cancellation; null while still active. */

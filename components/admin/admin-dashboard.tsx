@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AdminAPI } from "@/lib/api/admin"
 import { ServicesManager } from "./services-manager"
+import { BarbersManager } from "./barbers-manager"
 import { SlotsManager } from "./slots-manager"
 import { AppointmentsManager } from "./appointments-manager"
 import { StatsManager } from "./stats-manager"
@@ -43,12 +44,16 @@ export function AdminDashboard() {
         <Tabs defaultValue="services">
           <TabsList>
             <TabsTrigger value="services">Servicos</TabsTrigger>
+            <TabsTrigger value="barbers">Barbeiros</TabsTrigger>
             <TabsTrigger value="slots">Disponibilidade</TabsTrigger>
             <TabsTrigger value="appointments">Agendamentos</TabsTrigger>
             <TabsTrigger value="stats">Estatisticas</TabsTrigger>
           </TabsList>
           <TabsContent value="services" className="mt-6">
             <ServicesManager />
+          </TabsContent>
+          <TabsContent value="barbers" className="mt-6">
+            <BarbersManager />
           </TabsContent>
           <TabsContent value="slots" className="mt-6">
             <SlotsManager />

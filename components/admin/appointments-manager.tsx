@@ -76,6 +76,7 @@ export function AppointmentsManager() {
                   <Phone className="ml-2 h-3.5 w-3.5" />
                   {a.clientContact}
                 </div>
+                <p className="text-sm text-muted-foreground">Barbeiro: {a.barberName}</p>
                 <p className="text-sm text-muted-foreground">
                   {a.services.map((s) => s.name).join(", ") || "Sem servicos"}
                 </p>

@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "@/hooks/use-toast"
-import { AdminAPI, type ServiceInput } from "./admin"
+import { AdminAPI, type BarberInput, type ServiceInput } from "./admin"
 
 const servicesKey = "AdminServices"
+const barbersKey = "AdminBarbers"
 const slotsKey = "AdminSlots"
 const appointmentsKey = "AdminAppointments"
 const statsKey = "AdminClientStats"
@@ -42,13 +43,44 @@ export const useDeleteService = () => {
   })
 }
 
+export const useAdminBarbers = () =>
+  useQuery({ queryKey: [barbersKey], queryFn: () => AdminAPI.listBarbers() })
+
+export const useCreateBarber = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: BarberInput) => AdminAPI.createBarber(input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [barbersKey] }),
+    onError: onErrorToast("Erro ao criar barbeiro"),
+  })
+}
+
+export const useUpdateBarber = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: BarberInput }) => AdminAPI.updateBarber(id, input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [barbersKey] }),
+    onError: onErrorToast("Erro ao atualizar barbeiro"),
+  })
+}
+
+export const useDeleteBarber = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => AdminAPI.deleteBarber(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: [barbersKey] }),
+    onError: onErrorToast("Erro ao remover barbeiro"),
+  })
+}
+
 export const useAdminSlots = () =>
   useQuery({ queryKey: [slotsKey], queryFn: () => AdminAPI.listSlots() })
 
 export const useAddSlots = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ date, times }: { date: string; times: string[] }) => AdminAPI.addSlots(date, times),
+    mutationFn: ({ date, times, barberIds }: { date: string; times: string[]; barberIds: string[] }) =>
+      AdminAPI.addSlots(date, times, barberIds),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: [slotsKey] }),
     onError: onErrorToast("Erro ao adicionar horarios"),
   })

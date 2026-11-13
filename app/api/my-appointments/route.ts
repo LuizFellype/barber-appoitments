@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
   const today = new Date(new Date().toISOString().slice(0, 10))
   const appointments = await prisma.appointment.findMany({
     where: { clientId: client.id, status: "SCHEDULED", slot: { date: { gte: today } } },
-    include: { slot: true, services: true },
+    include: { slot: { include: { barber: true } }, services: true },
   })
 
   const visitNumbers = await getVisitNumbers(appointments.map((a) => a.id))
@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
       id: a.id,
       date: a.slot.date.toISOString().slice(0, 10),
       time: a.slot.time,
+      barberName: a.slot.barber.name,
       totalCents: a.totalCents,
       maintenanceFeeCents: a.maintenanceFeeCents,
       cancellationRequestedAt: a.cancellationRequestedAt,

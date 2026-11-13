@@ -71,6 +71,10 @@ const GQLRequestByOperationName = {
       id
       date
       time
+      barberId
+      Barber {
+        name
+      }
     }
   }`,
 }

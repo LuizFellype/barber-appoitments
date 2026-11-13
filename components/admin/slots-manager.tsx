@@ -9,17 +9,23 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { formatDateLong } from "@/lib/format"
 import type { AdminSlot } from "@/lib/api/admin"
-import { useAddSlots, useAdminSlots, useRemoveSlot } from "@/lib/api/admin-client"
+import { useAddSlots, useAdminBarbers, useAdminSlots, useRemoveSlot } from "@/lib/api/admin-client"
 import { ConfirmDialog } from "./confirm-dialog"
 
 export function SlotsManager() {
   const { data: slots, isLoading } = useAdminSlots()
+  const { data: barbers, isLoading: loadingBarbers } = useAdminBarbers()
   const addSlots = useAddSlots()
   const removeSlot = useRemoveSlot()
 
   const [date, setDate] = useState("")
   const [times, setTimes] = useState("")
+  const [selectedBarberIds, setSelectedBarberIds] = useState<string[]>([])
   const [removing, setRemoving] = useState<AdminSlot | null>(null)
+
+  function toggleBarber(id: string) {
+    setSelectedBarberIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+  }
 
   const byDay = useMemo(() => {
     const map = new Map<string, AdminSlot[]>()
@@ -35,10 +41,10 @@ export function SlotsManager() {
       .split(",")
       .map((t) => t.trim())
       .filter(Boolean)
-    if (!date || parsedTimes.length === 0) return
+    if (!date || parsedTimes.length === 0 || selectedBarberIds.length === 0) return
 
     addSlots.mutate(
-      { date, times: parsedTimes },
+      { date, times: parsedTimes, barberIds: selectedBarberIds },
       { onSuccess: () => setTimes("") },
     )
   }
@@ -55,24 +61,51 @@ export function SlotsManager() {
         <p className="text-sm text-muted-foreground">Adicione horarios para um dia especifico.</p>
       </div>
 
-      <Card className="flex flex-col gap-4 p-4 sm:flex-row sm:items-end">
+      <Card className="flex flex-col gap-4 p-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="slot-date">Data</Label>
+            <Input id="slot-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          </div>
+          <div className="flex flex-1 flex-col gap-1.5">
+            <Label htmlFor="slot-times">Horarios (separados por virgula)</Label>
+            <Input
+              id="slot-times"
+              value={times}
+              onChange={(e) => setTimes(e.target.value)}
+              placeholder="09:00, 10:00, 11:30"
+            />
+          </div>
+          <Button
+            onClick={handleAdd}
+            disabled={addSlots.isPending || !date || !times.trim() || selectedBarberIds.length === 0}
+          >
+            <Plus className="h-4 w-4" />
+            {addSlots.isPending ? "Adicionando..." : "Adicionar"}
+          </Button>
+        </div>
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="slot-date">Data</Label>
-          <Input id="slot-date" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <Label>Barbeiros disponiveis nesses horarios</Label>
+          {loadingBarbers ? (
+            <p className="text-sm text-muted-foreground">Carregando barbeiros...</p>
+          ) : (barbers?.length ?? 0) === 0 ? (
+            <p className="text-sm text-muted-foreground">Cadastre um barbeiro na aba Barbeiros antes de adicionar horarios.</p>
+          ) : (
+            <div className="flex flex-wrap gap-3">
+              {barbers!.map((barber) => (
+                <label key={barber.id} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={selectedBarberIds.includes(barber.id)}
+                    onChange={() => toggleBarber(barber.id)}
+                    className="h-4 w-4 accent-[var(--primary)]"
+                  />
+                  {barber.name}
+                </label>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="flex flex-1 flex-col gap-1.5">
-          <Label htmlFor="slot-times">Horarios (separados por virgula)</Label>
-          <Input
-            id="slot-times"
-            value={times}
-            onChange={(e) => setTimes(e.target.value)}
-            placeholder="09:00, 10:00, 11:30"
-          />
-        </div>
-        <Button onClick={handleAdd} disabled={addSlots.isPending || !date || !times.trim()}>
-          <Plus className="h-4 w-4" />
-          {addSlots.isPending ? "Adicionando..." : "Adicionar"}
-        </Button>
       </Card>
 
       {isLoading ? (
@@ -94,6 +127,7 @@ export function SlotsManager() {
                     className="flex items-center gap-2 rounded-lg border border-border bg-secondary/40 px-3 py-1.5 text-sm"
                   >
                     {slot.time}
+                    <span className="text-muted-foreground">· {slot.barberName}</span>
                     {slot.booked && (
                       <Badge variant="secondary" className="text-xs">
                         Reservado

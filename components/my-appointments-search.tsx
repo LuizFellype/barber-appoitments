@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search, CalendarDays, Clock, Ban, Gift } from "lucide-react"
+import { Search, CalendarDays, Clock, Ban, Gift, User } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -85,6 +85,10 @@ export function MyAppointmentsSearch() {
                     <span className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
                       {a.time}
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      {a.barberName}
                     </span>
                   </div>
                   <div className="flex items-center gap-3">

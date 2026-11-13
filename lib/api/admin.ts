@@ -18,10 +18,24 @@ export interface ServiceInput {
   active: boolean
 }
 
+export interface AdminBarber {
+  id: string
+  name: string
+  active: boolean
+  createdAt: string
+}
+
+export interface BarberInput {
+  name: string
+  active: boolean
+}
+
 export interface AdminSlot {
   id: string
   date: string
   time: string
+  barberId: string
+  barberName: string
   booked: boolean
 }
 
@@ -35,6 +49,7 @@ export interface AdminAppointment {
   createdAt: string
   date: string
   time: string
+  barberName: string
   clientName: string
   clientContact: string
   services: { serviceId: string | null; name: string; priceCents: number }[]
@@ -80,9 +95,15 @@ export const AdminAPI = {
     fetchApi(`admin/services/${id}`, withJson("PATCH", input)),
   deleteService: (id: string): Promise<{ ok: boolean }> => fetchApi(`admin/services/${id}`, withJson("DELETE")),
 
+  listBarbers: (): Promise<AdminBarber[]> => fetchApi("admin/barbers"),
+  createBarber: (input: BarberInput): Promise<AdminBarber> => fetchApi("admin/barbers", withJson("POST", input)),
+  updateBarber: (id: string, input: BarberInput): Promise<AdminBarber> =>
+    fetchApi(`admin/barbers/${id}`, withJson("PATCH", input)),
+  deleteBarber: (id: string): Promise<{ ok: boolean }> => fetchApi(`admin/barbers/${id}`, withJson("DELETE")),
+
   listSlots: (): Promise<AdminSlot[]> => fetchApi("admin/slots"),
-  addSlots: (date: string, times: string[]): Promise<AdminSlot[]> =>
-    fetchApi("admin/slots", withJson("POST", { date, times })),
+  addSlots: (date: string, times: string[], barberIds: string[]): Promise<AdminSlot[]> =>
+    fetchApi("admin/slots", withJson("POST", { date, times, barberIds })),
   removeSlot: (id: string): Promise<{ ok: boolean }> => fetchApi(`admin/slots/${id}`, withJson("DELETE")),
 
   listAppointmentsByDay: (date: string): Promise<AdminAppointment[]> =>

@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
   const appointments = await prisma.appointment.findMany({
     where: { status: "SCHEDULED", slot: { date: new Date(date) } },
     orderBy: { slot: { time: "asc" } },
-    include: { slot: true, client: true, services: true },
+    include: { slot: { include: { barber: true } }, client: true, services: true },
   })
 
   const visitNumbers = await getVisitNumbers(appointments.map((a) => a.id))
@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
         createdAt: a.createdAt,
         date: a.slot.date.toISOString().slice(0, 10),
         time: a.slot.time,
+        barberName: a.slot.barber.name,
         clientName: a.client.name,
         clientContact: a.client.contact,
         services: a.services.map((s) => ({ serviceId: s.serviceId, name: s.name, priceCents: s.priceCents })),

@@ -8,7 +8,7 @@ datasource db {
 }
 
 // Modeled after the entity contracts in app-de-agendamento-de-barbearia/services/types.ts.
-// Single barbershop: no staff/barber entity, slots are explicit date+time rows created by the admin.
+// Slots are explicit date+time+barber rows created by the admin (no recurring generation).
 
 enum AppointmentStatus {
   SCHEDULED
@@ -42,16 +42,29 @@ model Client {
   appointments Appointment[]
 }
 
-/// A bookable date+time slot. Created explicitly by the admin (no recurring
-/// business-hours generation), one row per date+time combination.
+/// A barber who works at the barbershop.
+model Barber {
+  id        String   @id @default(cuid())
+  name      String
+  /// If false, hidden from new availability/booking, but past slots/appointments still reference it.
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  slots Slot[]
+}
+
+/// A bookable date+time+barber slot. Created explicitly by the admin (no recurring
+/// business-hours generation), one row per date+time+barber combination.
 model Slot {
   id           String        @id @default(cuid())
   date         DateTime      @db.Date
   /// Time of day in HH:mm, kept as a plain string to mirror the reference app.
   time         String
+  barberId     String
+  barber       Barber        @relation(fields: [barberId], references: [id])
   appointments Appointment[]
 
-  @@unique([date, time])
+  @@unique([date, time, barberId])
 }
 
 /// A booking made by a client for a slot. Cancelling frees the slot up for a new
